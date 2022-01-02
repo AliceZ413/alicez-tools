@@ -1,19 +1,20 @@
 <template>
   <div class="music-wrapper">
-    <div class="music-title">共 个</div>
+    <div class="music-title">共 {{ records.length || 0 }} 个</div>
     <div class="music-list">
-      <div class="music-list-item" v-for="item in 5">
+      <div
+        class="music-list-item"
+        v-for="item in records"
+        :key="'record_' + item.resourceId"
+        @click="toProgram(item.resourceId, item.name)"
+      >
         <div class="pic">
-          <img
-            class="pic-img"
-            src="https://img01.yzcdn.cn/vant/cat.jpeg"
-            alt=""
-          />
+          <img class="pic-img" :src="item.picUrl" alt="" />
           <div class="pic-bg"></div>
         </div>
         <div class="right">
-          <div class="title">乃琳翻唱合集</div>
-          <div class="sub-title">最近播放：小孩子</div>
+          <div class="title">{{ item.name }}</div>
+          <div class="sub-title">最近播放：</div>
         </div>
       </div>
     </div>
@@ -21,9 +22,27 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
+  name: "Music",
   data() {
     return {};
+  },
+  computed: {
+    ...mapState({
+      records: (state) => state.dj.resourceList,
+    }),
+  },
+  methods: {
+    toProgram(resourceId, name) {
+      this.$router.push({
+        path: '/program',
+        query: {
+          resourceId,
+          name: encodeURIComponent(name),
+        }
+      });
+    },
   },
 };
 </script>

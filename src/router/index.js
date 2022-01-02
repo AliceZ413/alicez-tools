@@ -30,12 +30,19 @@ const routes = [
       {
         path: 'music',
         name: 'Music',
-        component: () => import(/* webpackChunkName: "zhuanpan" */'../views/Music.vue'),
+        component: () => import(/* webpackChunkName: "music" */'../views/Music.vue'),
         meta: {
           title: '听听歌'
         },
-      }
+      },
     ],
+  },
+  {
+    path: '/program',
+    name: 'Program',
+    component: () => import(/* webpackChunkName: "program" */'../views/Music/Program.vue'),
+    meta: {
+    },
   },
   {
     path: '/about',
@@ -56,9 +63,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   console.log(to);
   if (to.meta && to.meta.title != '') {
-    document.title = to.meta.title;
+    document.title = to.meta.title || 'AliceZ-Tools';
   }
   next();
 });
 
-export default router
+export default router;
