@@ -7,6 +7,14 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: () => import('@/views/Home.vue'),
+    meta: {
+      title: 'AliceZ-Tools'
+    },
+  },
+  {
+    path: '/layout',
     name: 'Layout',
     redirect: 'zhuanpan',
     component: () => import('../views/layout/Layout.vue'),
@@ -17,6 +25,14 @@ const routes = [
         component: () => import(/* webpackChunkName: "zhuanpan" */'../views/Zhuanpan.vue'),
         meta: {
           title: '转盘'
+        },
+      },
+      {
+        path: 'music',
+        name: 'Music',
+        component: () => import(/* webpackChunkName: "zhuanpan" */'../views/Music.vue'),
+        meta: {
+          title: '听听歌'
         },
       }
     ],
