@@ -18,6 +18,7 @@
             class="music-item"
             v-for="item in programs"
             :key="'record_' + item.id"
+            @click="playMusic(item.id)"
           >
             <div class="pic">
               <img class="pic-img" :src="item.coverUrl" alt="" />
@@ -41,6 +42,7 @@
 
 <script>
 import { api_getPrograms } from "@/http/apis/music.js";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -97,6 +99,9 @@ export default {
     },
     loadProgram() {
       this.getPrograms();
+    },
+    playMusic(id) {
+      this.$store.commit('musicPlayer/setShowPlayer', true);
     },
   },
 };

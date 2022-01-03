@@ -8,6 +8,15 @@ const utils = {
         var seconds = parseInt((second % (1000 * 60)) / 1000);
         return `${minutes}:${seconds}`;
     },
+    // 播放数转换
+    playCountChange(count) {
+        if (count < 10000) {
+            return count;
+        } else {
+            let w = (count / 10000).toFixed(1);
+            return `${w}万`;
+        }
+    },
 };
 
 export default utils;
