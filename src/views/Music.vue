@@ -6,7 +6,7 @@
         class="music-list-item"
         v-for="item in records"
         :key="'record_' + item.resourceId"
-        @click="toProgram(item.resourceId, item.name)"
+        @click="toProgram(item.resourceId, item.name, item.picUrl)"
       >
         <div class="pic">
           <img class="pic-img" :src="item.picUrl" alt="" />
@@ -34,12 +34,13 @@ export default {
     }),
   },
   methods: {
-    toProgram(resourceId, name) {
+    toProgram(resourceId, name, picUrl) {
       this.$router.push({
         path: '/program',
         query: {
           resourceId,
           name: encodeURIComponent(name),
+          picUrl,
         }
       });
     },

@@ -139,7 +139,7 @@ export default {
     height: 60px;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
-    position: absolute;
+    position: fixed;
     z-index: 1;
     box-shadow: 0 0 6px 4px rgba(197, 197, 197, 0.3);
     right: -170px;

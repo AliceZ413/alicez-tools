@@ -1,13 +1,42 @@
 <template>
-  <div class="page">
-    <van-nav-bar
+  <div class="page" ref="page">
+    <!-- <van-nav-bar
       :title="title"
       :safe-area-inset-top="true"
       left-text="返回"
       left-arrow
       @click-left="goBack"
-    ></van-nav-bar>
-    <div class="content">
+    ></van-nav-bar> -->
+    <div class="top">
+      <div class="bg" ref="topBg">
+        <div
+          class="bg-img"
+          :style="{
+            backgroundImage: `url(${coverPic})`,
+          }"
+        ></div>
+      </div>
+
+      <div class="top-bar" ref="topBar">
+        <van-icon name="arrow-left" size="28px"/>
+        <van-icon name="search" size="28px"/>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="bottom-bar-control">
+          <div class="item">
+
+          </div>
+          <div class="item">
+
+          </div>
+          <div class="item">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content" ref="content">
       <div class="music-list">
         <van-list
           v-model="pager.loading"
@@ -26,11 +55,19 @@
             <div class="right">
               <div class="title">{{ item.name }}</div>
               <div class="sub-title">
-                <div class="time">{{ new Date(item.createTime).format("yyyy-MM-dd") }}</div>
-                <div class="play-count">
-                  <van-icon class="icon" name="play-circle-o" />{{ item.listenerCount }}
+                <div class="time">
+                  {{ new Date(item.createTime).format("yyyy-MM-dd") }}
                 </div>
-                <div class="duration"><van-icon class="icon" name="clock-o" />{{ $utils.second2mmss(item.duration) }}</div>
+                <div class="play-count">
+                  <van-icon class="icon" name="play-circle-o" />{{
+                    item.listenerCount
+                  }}
+                </div>
+                <div class="duration">
+                  <van-icon class="icon" name="clock-o" />{{
+                    $utils.second2mmss(item.duration)
+                  }}
+                </div>
               </div>
             </div>
           </div>
@@ -41,13 +78,15 @@
 </template>
 
 <script>
-import { api_getPrograms } from "@/http/apis/music.js";
+import { api_getPrograms, api_getDjDetail } from "@/http/apis/music.js";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
       resourceId: "",
       title: "",
+      coverPic: "",
+      djDetail: {},
       programs: [],
       pager: {
         page: 1,
@@ -64,8 +103,35 @@ export default {
     let query = this.$route.query;
     this.resourceId = query.resourceId;
     this.title = decodeURIComponent(query.name);
+    this.coverPic = query.picUrl;
 
     document.title = this.title;
+    this.getDjDetail();
+  },
+  mounted() {
+    document.addEventListener("scroll", (event) => {
+      let docEle = document.documentElement;
+      let topBgEle = this.$refs.topBg;
+      let topBarEle = this.$refs.topBar;
+      let className = topBarEle.className;
+      if (docEle) {
+        if (docEle.scrollTop <= 170) {
+          // 这段区域
+          let borderRadius = Number(
+            ((1 - docEle.scrollTop / 170) * 0.5 * 100).toFixed(1)
+          );
+          // console.log(borderRadius);
+          topBgEle.style.borderRadius = `${borderRadius}%`;
+          if (topBarEle.className.indexOf('black') != -1) {
+            topBarEle.className = "top-bar";
+          }
+        } else {
+          if (topBarEle.className.indexOf('black') == -1) {
+            topBarEle.className = "top-bar black";
+          }
+        }
+      }
+    });
   },
   methods: {
     goBack() {
@@ -100,8 +166,20 @@ export default {
     loadProgram() {
       this.getPrograms();
     },
+    getDjDetail() {
+      api_getDjDetail({
+        rid: this.resourceId,
+      }).then(res => {
+        let { code, msg, data } = res.data;
+        if (this.$utils.OK(code)) {
+          this.djDetail = data;
+        }
+      }).catch(err => {
+
+      });
+    },
     playMusic(id) {
-      this.$store.commit('musicPlayer/setShowPlayer', true);
+      this.$store.commit("musicPlayer/setShowPlayer", true);
     },
   },
 };
@@ -112,11 +190,82 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  /* height: 100vh; */
   box-sizing: border-box;
+  .top {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    .bg {
+      width: 2000px;
+      height: 1000px;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 30px;
+      left: -812.5px;
+      z-index: 2;
+      overflow: hidden;
+      .bg-img {
+        width: 375px;
+        height: 200px;
+        position: absolute;
+        left: 50%;
+        bottom: -0;
+        background-size: cover;
+        background-position: center 30px;
+        background-repeat: no-repeat;
+        transform: translateX(-50%);
+        filter: blur(5px);
+      }
+    }
+    .top-bar {
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      color: #fff;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &.black {
+        color: #000;
+        background-color: #fff;
+        transition: all 0.25s ease-in;
+      }
+    }
+    .bottom-bar {
+      width: 100%;
+      height: 40px;
+      background-color: #fff;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      .bottom-bar-control {
+        width: 250px;
+        height: 40px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        background-color: #fff;
+        z-index: 2;
+        border-radius: 20px;
+        box-shadow: 0 0 8px 4px rgba(197, 197, 197, .2);
+        display: flex;
+        .item {
+          flex: 1;
+        }
+      }
+    }
+  }
   .content {
     flex: 1;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     .music-list {
       padding: 20px;
       .music-item {
@@ -161,11 +310,12 @@ export default {
             margin-top: 10px;
             font-size: 12px;
             color: #aaa;
-            .duration, .play-count {
-                margin-left: 10px;
-                .icon {
-                    margin-right: 3px;
-                }
+            .duration,
+            .play-count {
+              margin-left: 10px;
+              .icon {
+                margin-right: 3px;
+              }
             }
           }
         }
