@@ -12,26 +12,50 @@
         <div
           class="bg-img"
           :style="{
-            backgroundImage: `url(${coverPic})`,
+            backgroundImage: `url(${djDetail.picUrl})`,
           }"
         ></div>
       </div>
-
+      <div class="info">
+        <div class="cover">
+          <div
+            class="cover-pic"
+            :style="{
+              backgroundImage: `url(${djDetail.picUrl})`,
+            }"
+          ></div>
+        </div>
+        <div class="right">
+          <div class="name">{{ djDetail.name }}</div>
+          <div class="nickname" v-if="djDetail.dj">
+            <div class="avatar" :style="{ backgroundImage: `url(${djDetail.dj.avatarUrl})`, }"></div>
+            <div>{{ djDetail.dj.nickname }}</div>
+          </div>
+        </div>
+      </div>
       <div class="top-bar" ref="topBar">
-        <van-icon name="arrow-left" size="28px"/>
-        <van-icon name="search" size="28px"/>
+        <!-- <div
+          class="top-bar-bg"
+          
+        ></div> -->
+        <!-- :style="{ backgroundImage: `url(${coverPic})` }" -->
+        <van-icon name="arrow-left" size="24px" @click="goBack" />
+        <van-icon name="search" size="24px" />
       </div>
 
       <div class="bottom-bar">
         <div class="bottom-bar-control">
           <div class="item">
-
+            <van-icon name="star-o" />
+            <div class="number">{{ djDetail.subCount || "-" }}</div>
           </div>
           <div class="item">
-
+            <van-icon name="chat-o" />
+            <div class="number">{{ djDetail.commentCount || "-" }}</div>
           </div>
           <div class="item">
-
+            <van-icon name="share-o" />
+            <div class="number">{{ djDetail.shareCount || "-" }}</div>
           </div>
         </div>
       </div>
@@ -122,11 +146,11 @@ export default {
           );
           // console.log(borderRadius);
           topBgEle.style.borderRadius = `${borderRadius}%`;
-          if (topBarEle.className.indexOf('black') != -1) {
+          if (topBarEle.className.indexOf("black") != -1) {
             topBarEle.className = "top-bar";
           }
         } else {
-          if (topBarEle.className.indexOf('black') == -1) {
+          if (topBarEle.className.indexOf("black") == -1) {
             topBarEle.className = "top-bar black";
           }
         }
@@ -169,14 +193,14 @@ export default {
     getDjDetail() {
       api_getDjDetail({
         rid: this.resourceId,
-      }).then(res => {
-        let { code, msg, data } = res.data;
-        if (this.$utils.OK(code)) {
-          this.djDetail = data;
-        }
-      }).catch(err => {
-
-      });
+      })
+        .then((res) => {
+          let { code, msg, data } = res.data;
+          if (this.$utils.OK(code)) {
+            this.djDetail = data;
+          }
+        })
+        .catch((err) => {});
     },
     playMusic(id) {
       this.$store.commit("musicPlayer/setShowPlayer", true);
@@ -228,7 +252,7 @@ export default {
       top: 0;
       left: 0;
       color: #fff;
-      z-index: 2;
+      z-index: 3;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -236,6 +260,65 @@ export default {
         color: #000;
         background-color: #fff;
         transition: all 0.25s ease-in;
+      }
+      .top-bar-bg {
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: #fff;
+        /* filter: blur(5px); */
+      }
+    }
+    .info {
+      width: 320px;
+      height: 90px;
+      /* background-color: #fff; */
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      transform: translateX(-50%);
+      z-index: 2;
+      border-radius: 10px;
+      /* box-shadow: 0 0 8px 3px rgba(197, 197, 197, 0.2); */
+      box-sizing: border-box;
+      padding: 10px;
+      display: flex;
+      .cover {
+        width: 70px;
+        height: 70px;
+        .cover-pic {
+          width: 70px;
+          height: 70px;
+          border-radius: 4px;
+          background-size: cover;
+          background-position: center;
+        }
+      }
+      .right {
+        .name {
+          font-size: 18px;
+          margin-left: 10px;
+          color: #fff;
+        }
+        .nickname {
+          margin-top: 10px;
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          margin-left: 10px;
+          color: #fff;
+          .avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 12.5px;
+            background-size: cover;
+            margin-right: 10px;
+          }
+        }
       }
     }
     .bottom-bar {
@@ -246,19 +329,35 @@ export default {
       bottom: 0;
       left: 0;
       .bottom-bar-control {
-        width: 250px;
+        width: 300px;
         height: 40px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        bottom: 20px;
+        bottom: 10px;
         background-color: #fff;
         z-index: 2;
         border-radius: 20px;
-        box-shadow: 0 0 8px 4px rgba(197, 197, 197, .2);
+        box-shadow: 0 0 8px 4px rgba(197, 197, 197, 0.2);
         display: flex;
+        padding: 0 10px;
         .item {
           flex: 1;
+          /* line-height: 40px; */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          i {
+            font-size: 20px;
+          }
+          .number {
+            /* width: 50px; */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-left: 5px;
+            font-size: 14px;
+          }
         }
       }
     }
