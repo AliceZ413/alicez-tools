@@ -6,7 +6,7 @@ const utils = {
     second2mmss(second) {
         var minutes = parseInt((second % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = parseInt((second % (1000 * 60)) / 1000);
-        return `${minutes}:${seconds}`;
+        return `${minutes}:${seconds >= 10 ? seconds : '0'+seconds}`;
     },
     // 播放数转换
     playCountChange(count) {

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import './cube-ui'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -11,6 +12,10 @@ Vue.prototype.$utils = $utils;
 import Vant from 'vant';
 import 'vant/lib/index.css';
 Vue.use(Vant);
+
+import Cube from 'cube-ui'
+Vue.use(Cube);
+
 
 //给Date添加Format方法
 Date.prototype.format = function(fmt) {

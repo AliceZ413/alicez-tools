@@ -2,12 +2,16 @@
   <div id="app">
     <router-view />
     <div
-      :class="['player', flags ? 'flags' : '', showPlayerControl ? 'control' : '']"
+      :class="[
+        'player',
+        flags ? 'flags' : '',
+        showPlayerControl ? 'control' : '',
+      ]"
       id="player"
       v-show="showPlayer"
       @click="handleTouchStart(true)"
     >
-    <!-- 
+      <!-- 
       @mousedown="down"
       @mousemove="move"
       @mouseup="end"
@@ -16,11 +20,18 @@
       @touchend="end"
      -->
       <div class="cover">
-        <van-icon v-if="showPlayerControl" class="cover-btn" :name="playIcon" size="30" @click.stop="handlePlay"/>
+        <van-icon
+          v-if="showPlayerControl"
+          class="cover-btn"
+          :name="playIcon"
+          size="30"
+          @click.stop="handlePlay"
+        />
       </div>
       <div class="name">1111111111111111</div>
-      <van-icon name="pause-circle-o" size="30"/>
-      <van-icon name="cross" size="20" @click.stop="handleTouchStart(false)"/>
+      <van-icon name="pause-circle-o" size="30" />
+      <van-icon name="cross" size="20" @click.stop="handleTouchStart(false)" />
+      <!-- <audio :src=""></audio> -->
     </div>
   </div>
 </template>
@@ -43,7 +54,7 @@ export default {
       yPum: "",
 
       playMusic: false,
-      playIcon: 'play-circle-o',
+      playIcon: "play-circle-o",
     };
   },
   computed: {
@@ -54,17 +65,17 @@ export default {
   },
   methods: {
     handleTouchStart(flag) {
-      this.$store.commit('musicPlayer/setShowPlayerControl', flag);
+      this.$store.commit("musicPlayer/setShowPlayerControl", flag);
     },
     handlePlay() {
       this.playMusic = !this.playMusic;
-      this.playIcon = this.playMusic ? 'pause-circle-o' : 'play-circle-o';
+      this.playIcon = this.playMusic ? "pause-circle-o" : "play-circle-o";
     },
     down(event) {
       this.flags = true;
       let touch;
       let player = document.getElementById("player");
-      player.style.transition = '';
+      player.style.transition = "";
       console.dir(player);
       console.dir(event);
       if (event.touches) {
@@ -106,7 +117,7 @@ export default {
       let player = document.getElementById("player");
       // let center = this.deviceWidth / 2;
       // let xPum = this.xPum;
-      player.style.transition = 'all 0.25s ease';
+      player.style.transition = "all 0.25s ease";
       // if (xPum <= center) {
       //   // left
       //   player.style.left = "0px";
@@ -121,6 +132,16 @@ export default {
   mounted() {
     let app = document.getElementById("app");
     this.deviceWidth = app.clientWidth;
+
+    //定义窗口默认事件
+
+    window.eventDefault = function (e) {
+      e.preventDefault();
+    };
+
+    //绑定浏览器禁止滑动事件
+
+    // document.addEventListener("touchmove", eventDefault, false);
   },
 };
 </script>
@@ -151,6 +172,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #fff;
     &.flags {
       // border-radius: 30px;
       animation: borderRadius 1s ease;
