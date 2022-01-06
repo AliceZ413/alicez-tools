@@ -127,7 +127,7 @@
                 class="music-item"
                 v-for="item in programs"
                 :key="'record_' + item.id"
-                @click="playMusic(item.id)"
+                @click="playMusic(item.mainSong.id, item.name, item.coverUrl)"
               >
                 <div class="pic">
                   <img class="pic-img" :src="item.coverUrl" alt="" />
@@ -164,7 +164,8 @@
 </template>
 
 <script>
-import { api_getPrograms, api_getDjDetail } from "@/http/apis/music.js";
+import { api_getPrograms, api_getDjDetail, api_getSongUrl } from "@/http/apis/music.js";
+import { mapState } from 'vuex';
 export default {
   components: {},
   data() {
@@ -230,6 +231,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      showPlayer: (state) => state.musicPlayer.showPlayer,
+    }),
     initialIndex() {
       let index = 0;
       index = this.tabLabels.findIndex((item) => {
@@ -319,6 +323,9 @@ export default {
         });
     },
     loadProgram() {
+      if (this.pager.more == false) {
+        return;
+      }
       this.getPrograms();
     },
     getDjDetail() {
@@ -333,8 +340,28 @@ export default {
         })
         .catch((err) => {});
     },
-    playMusic(id) {
-      this.$store.commit("musicPlayer/setShowPlayer", true);
+    getSongUrl(id) {
+      api_getSongUrl({
+        id,
+      }).then(res => {
+        let { data, code } = res.data;
+        if (this.$utils.OK(code)) {
+          if (data.url) {
+            this.$store.commit("musicPlayer/setMusicUrl", data.url);
+          }
+        }
+      }).catch(err => {
+
+      });
+    },
+    playMusic(id, name, pic) {
+      console.log(id);
+      if (!this.showPlayer) {
+        this.$store.commit("musicPlayer/setShowPlayer", true);
+      }
+      this.getSongUrl(id);
+      this.$store.commit('musicPlayer/setMusicPic', pic);
+      this.$store.commit("musicPlayer/setMusicName", name);
       // this.$store.commit("musicPlayer/setShowPlayerControl", true);
     },
     start(event) {

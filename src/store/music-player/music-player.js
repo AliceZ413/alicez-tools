@@ -5,7 +5,9 @@ module.exports = {
         //保存页面元素滚动位置，格式：scrollId: {x: 0, y: 0}
         showPlayer: false, // 显示player
         showPlayerControl: false, // 显示player的控制器
-        
+        musicUrl: '',
+        musicName: '',
+        musicPic: '',
     }),
     mutations: {
         setShowPlayer(state, value) {
@@ -14,6 +16,15 @@ module.exports = {
         },
         setShowPlayerControl(state, value) {
             state.showPlayerControl = value;
+        },
+        setMusicUrl(state, value) {
+            state.musicUrl = value;
+        },
+        setMusicName(state, value) {
+            state.musicName = value;
+        },
+        setMusicPic(state, value) {
+            state.musicPic = value;
         },
     },
     actions: {

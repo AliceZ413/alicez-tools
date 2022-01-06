@@ -20,18 +20,21 @@
       @touchend="end"
      -->
       <div class="cover">
-        <van-icon
+        <div class="cover-pic" :style="{
+          backgroundImage: `url(${musicPic})`,
+        }"></div>
+        <!-- <van-icon
           v-if="showPlayerControl"
           class="cover-btn"
           :name="playIcon"
           size="30"
           @click.stop="handlePlay"
-        />
+        /> -->
       </div>
-      <div class="name">1111111111111111</div>
+      <div class="name">{{ musicName || '' }}</div>
       <van-icon name="pause-circle-o" size="30" />
       <van-icon name="cross" size="20" @click.stop="handleTouchStart(false)" />
-      <!-- <audio :src=""></audio> -->
+      <audio ref="audio" :src="musicUrl" autoplay></audio>
     </div>
   </div>
 </template>
@@ -61,6 +64,9 @@ export default {
     ...mapState({
       showPlayer: (state) => state.musicPlayer.showPlayer,
       showPlayerControl: (state) => state.musicPlayer.showPlayerControl,
+      musicName: (state) => state.musicPlayer.musicName,
+      musicPic: (state) => state.musicPlayer.musicPic,
+      musicUrl: (state) => state.musicPlayer.musicUrl,
     }),
   },
   methods: {
@@ -142,6 +148,9 @@ export default {
     //绑定浏览器禁止滑动事件
 
     // document.addEventListener("touchmove", eventDefault, false);
+    this.$refs.audio.addEventListener('canplay', () => {
+      this.$refs.audio.play();
+    });
   },
 };
 </script>
@@ -156,14 +165,14 @@ export default {
   min-height: 100vh;
   position: relative;
   .player {
-    width: 200px;
+    width: 300px;
     height: 60px;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     position: fixed;
     z-index: 1;
     box-shadow: 0 0 6px 4px rgba(197, 197, 197, 0.3);
-    right: -170px;
+    right: -240px;
     bottom: 50px;
     box-sizing: border-box;
     padding: 5px;
@@ -194,9 +203,17 @@ export default {
         transform: translate(-50%, -50%);
         color: #fff;
       }
+      .cover-pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 25px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
     }
     .name {
-      width: 50px;
+      width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

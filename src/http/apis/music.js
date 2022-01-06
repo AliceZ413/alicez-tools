@@ -8,3 +8,7 @@ export const api_getPrograms = function (data) {
 export const api_getDjDetail = function (data) {
     return http.get(`${config.domain}/dj/detail`, data);
 };
+
+export const api_getSongUrl = function(data) {
+    return http.get(`${config.domain}/song/download/url`, data);
+}
